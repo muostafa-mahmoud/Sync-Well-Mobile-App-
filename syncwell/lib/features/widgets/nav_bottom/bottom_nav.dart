@@ -22,6 +22,7 @@ class BottomNav extends StatelessWidget {
         BottomNavigationBarItem(icon: Icon(Icons.fitness_center), label: 'Workout'),
         BottomNavigationBarItem(icon: Icon(Icons.restaurant), label: 'Diet'),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        
       ],
     );
   }

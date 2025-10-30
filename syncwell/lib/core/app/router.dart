@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncwell/features/auth/presentation/pages/login_screen.dart';
 import 'package:syncwell/features/auth/presentation/pages/signup_screen.dart';
+import 'package:syncwell/features/bmi_calc/bmi_calc.dart';
 import 'package:syncwell/features/dashboard/persentaion/pages/dashboard_page.dart';
 import 'package:syncwell/features/diet/presentaion/pages/diet_page.dart';
 import 'package:syncwell/features/profile/peresentation/pages/profile_page.dart';
@@ -15,6 +16,8 @@ class Routes {
   static const diet = '/diet';
   static const workout = '/workout';
   static const profile = '/profile';
+  static const bmi = '/bmi';
+
 }
 
 class AppRouter {
@@ -38,6 +41,9 @@ class AppRouter {
       case Routes.profile:
         return MaterialPageRoute(
             builder: (_) => ProfilePage(onNavTap: (i) {}));
+      case Routes.bmi:
+        return MaterialPageRoute(
+            builder: (_) => BMICalculatorScreen(onNavTap: (i) {}));
       default:
         return MaterialPageRoute(builder: (_) => const SplashPage());
     }

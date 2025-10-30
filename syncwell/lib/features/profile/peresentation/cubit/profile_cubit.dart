@@ -1,15 +1,15 @@
 // lib/features/profile/presentation/cubit/profile_cubit.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../data/profile_repository.dart';
-import '../../domain/user_model.dart';
+import 'package:syncwell/features/auth/data/auth_repository.dart';
+import 'package:syncwell/features/auth/domain/user_mode.dart';
 
 class ProfileCubit extends Cubit<UserModel?> {
-  final ProfileRepository repository;
+  final AuthRepository repository;
 
   ProfileCubit(this.repository) : super(null);
 
   void loadUser() {
-    final user = repository.getUserProfile();
+    final user = repository.currentUser;
     if (user == null) {
       // Seed data if box is empty
       final newUser = UserModel(
@@ -19,11 +19,11 @@ class ProfileCubit extends Cubit<UserModel?> {
         weight: 75,
         height: 175,
         bmi: 22.5,
-        workouts: 124,
+        workoutsCount: 150,
         weightLost: 5.2,
         caloriesPerDay: 1700,
       );
-      repository.saveUserProfile(newUser);
+      repository.saveUser(newUser);
       emit(newUser);
     } else {
       emit(user);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:syncwell/features/bmi_calc/bmi_calc.dart';
 import 'package:syncwell/features/dashboard/persentaion/pages/dashboard_page.dart';
 import 'package:syncwell/features/diet/presentaion/pages/diet_page.dart';
 import 'package:syncwell/features/profile/peresentation/pages/profile_page.dart';
@@ -24,6 +25,7 @@ class _MainShellState extends State<MainShell> {
       WorkoutPage(onNavTap: _onTap),
       DietPage(onNavTap: _onTap),
       ProfilePage(onNavTap: _onTap),
+      BMICalculatorScreen( onNavTap: _onTap), 
     ];
 
     return Scaffold(

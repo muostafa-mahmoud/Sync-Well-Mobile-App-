@@ -38,7 +38,7 @@ class DashboardCubit extends Cubit<DashboardState> {
       targetKcal: diet.targetCalories,
       steps: 7542,
       bmi: user?.bmi ?? 0,
-      weightKg: user?.weightKg ?? 0,
+      weightKg: user?.weight?? 0,
     ));
   }
 }

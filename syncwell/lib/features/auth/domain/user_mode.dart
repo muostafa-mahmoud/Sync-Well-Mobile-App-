@@ -11,27 +11,28 @@ class UserModel extends HiveObject {
   @HiveField(2)
   int age;
   @HiveField(3)
-  double weightKg;
+  double weight;
   @HiveField(4)
-  double heightCm;
+  double height;
   @HiveField(5)
   double bmi;
   @HiveField(6)
   int workoutsCount;
   @HiveField(7)
-  double weightLostKg;
+  double weightLost;
   @HiveField(8)
   int caloriesPerDay;
+  @HiveField(9)
 
   UserModel({
     required this.name,
     required this.email,
     required this.age,
-    required this.weightKg,
-    required this.heightCm,
+    required this.weight,
+    required this.height,
     required this.bmi,
     required this.workoutsCount,
-    required this.weightLostKg,
+    required this.weightLost,
     required this.caloriesPerDay,
   });
 }
@@ -47,12 +48,12 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       name: reader.readString(),
       email: reader.readString(),
       age: reader.readInt(),
-      weightKg: reader.readDouble(),
-      heightCm: reader.readDouble(),
+      weight: reader.readDouble(),
+      height: reader.readDouble(),
       bmi: reader.readDouble(),
       workoutsCount: reader.readInt(),
-      weightLostKg: reader.readDouble(),
-      caloriesPerDay: reader.readInt(),
+      weightLost: reader.readDouble(),
+    caloriesPerDay: reader.readInt(),
     );
   }
 
@@ -62,11 +63,11 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       ..writeString(obj.name)
       ..writeString(obj.email)
       ..writeInt(obj.age)
-      ..writeDouble(obj.weightKg)
-      ..writeDouble(obj.heightCm)
+      ..writeDouble(obj.weight)
+      ..writeDouble(obj.height)
       ..writeDouble(obj.bmi)
       ..writeInt(obj.workoutsCount)
-      ..writeDouble(obj.weightLostKg)
+      ..writeDouble(obj. weightLost)
       ..writeInt(obj.caloriesPerDay);
   }
 }

@@ -26,15 +26,15 @@ class AuthCubit extends Cubit<AuthState> {
     emit(state.copyWith(loading: true));
     await Future.delayed(const Duration(milliseconds: 400));
     final demo = UserModel(
-      name: 'Alex Johnson',
+      name: "John Doe",
       email: email,
-      age: 28,
-      weightKg: 75,
-      heightCm: 175,
-      bmi: 22.5,
-      workoutsCount: 124,
-      weightLostKg: 5.2,
-      caloriesPerDay: 2500,
+      age: 30,
+      weight: 80,
+      height: 180,
+      bmi: 24.7,
+      workoutsCount: 120,
+      weightLost: 4.5,
+      caloriesPerDay: 1600,
     );
     await repo.saveUser(demo);
     emit(AuthState(loading: false, user: demo));
