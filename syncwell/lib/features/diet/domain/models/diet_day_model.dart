@@ -26,8 +26,12 @@ class DietDayModel extends HiveObject {
     this.snacks = const [],
   });
 
-  int get consumed =>
-      [...breakfast, ...lunch, ...dinner, ...snacks].fold(0, (a, b) => a + b.calories);
+  int get consumed => [
+    ...breakfast,
+    ...lunch,
+    ...dinner,
+    ...snacks,
+  ].fold(0, (a, b) => a + b.calories);
   int get remaining => targetCalories - consumed;
 }
 

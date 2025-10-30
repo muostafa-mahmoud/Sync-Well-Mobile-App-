@@ -1,53 +1,87 @@
-// lib/features/auth/presentation/cubit/auth_cubit.dart
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:syncwell/features/auth/domain/user_mode.dart';
-import '../../data/auth_repository.dart';
-
-
-class AuthState extends Equatable {
-  final bool loading;
-  final UserModel? user;
-  final String? error;
-  const AuthState({this.loading = false, this.user, this.error});
-  AuthState copyWith({bool? loading, UserModel? user, String? error}) =>
-      AuthState(loading: loading ?? this.loading, user: user ?? this.user, error: error);
-  @override
-  List<Object?> get props => [loading, user, error];
-}
+import '../../data/repositories/local_auth_service.dart';
+import '../../data/models/auth_model.dart';
+import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  final AuthRepository repo;
-  AuthCubit(this.repo) : super(const AuthState());
+  final LocalAuthService _authService;
 
-  void checkSession() => emit(AuthState(user: repo.currentUser));
+  AuthCubit({LocalAuthService? authService})
+      : _authService = authService ?? LocalAuthService(),
+        super(const AuthState());
 
-  Future<void> login(String email, String password) async {
-    emit(state.copyWith(loading: true));
-    await Future.delayed(const Duration(milliseconds: 400));
-    final demo = UserModel(
-      name: "John Doe",
-      email: email,
-      age: 30,
-      weight: 80,
-      height: 180,
-      bmi: 24.7,
-      workoutsCount: 120,
-      weightLost: 4.5,
-      caloriesPerDay: 1600,
-    );
-    await repo.saveUser(demo);
-    emit(AuthState(loading: false, user: demo));
+  void toggleAuthMode() {
+    emit(state.copyWith(isLogin: !state.isLogin));
   }
 
-  Future<void> signup(UserModel user) async {
-    emit(state.copyWith(loading: true));
-    await repo.saveUser(user);
-    emit(AuthState(loading: false, user: user));
+  Future<void> login(LoginRequest request) async {
+    emit(state.copyWith(status: AuthStatus.loading, clearError: true));
+
+    try {
+      final user = await _authService.login(
+        email: request.email,
+        password: request.password,
+      );
+
+      emit(state.copyWith(
+          status: AuthStatus.success, user: user, clearError: true));
+    } catch (e) {
+      emit(state.copyWith(status: AuthStatus.error, error: e.toString()));
+    }
   }
 
-  Future<void> logout() async {
-    await repo.logout();
+  Future<void> signUp(SignUpRequest request) async {
+    emit(state.copyWith(status: AuthStatus.loading, clearError: true));
+
+    try {
+      final user = await _authService.signUp(
+        email: request.email,
+        password: request.password,
+        fullName: request.fullName,
+        phone: request.phone,
+        dob: request.dob,
+      );
+
+      emit(state.copyWith(
+          status: AuthStatus.success, user: user, clearError: true));
+    } catch (e) {
+      emit(state.copyWith(status: AuthStatus.error, error: e.toString()));
+    }
+  }
+
+  void resetError() {
+    emit(state.copyWith(status: AuthStatus.initial, clearError: true));
+  }
+
+  Future<void> forgotPassword(String email) async {
+    emit(state.copyWith(status: AuthStatus.loading, clearError: true));
+
+    try {
+      await _authService.sendPasswordResetEmail(email);
+      emit(state.copyWith(status: AuthStatus.success, clearError: true));
+    } catch (e) {
+      emit(state.copyWith(status: AuthStatus.error, error: e.toString()));
+    }
+  }
+
+  Future<void> signOut() async {
+    await _authService.signOut();
     emit(const AuthState());
+  }
+
+  Future<void> loadCurrentUser() async {
+    try {
+      final user = await _authService.loadCurrentUserProfile();
+
+      if (user == null) {
+        emit(state.copyWith(status: AuthStatus.initial, user: null));
+        return;
+      }
+
+      emit(state.copyWith(
+          status: AuthStatus.success, user: user, clearError: true));
+    } catch (e) {
+      emit(state.copyWith(status: AuthStatus.error, error: e.toString()));
+    }
   }
 }

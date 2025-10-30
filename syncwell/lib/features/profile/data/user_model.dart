@@ -1,6 +1,7 @@
 // lib/features/auth/domain/user_mode.dart
 import 'package:hive/hive.dart';
 
+part 'user_model.g.dart';
 
 @HiveType(typeId: 0)
 class UserModel extends HiveObject {

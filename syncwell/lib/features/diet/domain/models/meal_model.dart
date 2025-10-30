@@ -22,6 +22,8 @@ class MealModelAdapter extends TypeAdapter<MealModel> {
 
   @override
   void write(BinaryWriter writer, MealModel obj) {
-    writer..writeString(obj.title)..writeInt(obj.calories);
+    writer
+      ..writeString(obj.title)
+      ..writeInt(obj.calories);
   }
 }

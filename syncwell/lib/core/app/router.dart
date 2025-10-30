@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:syncwell/features/auth/presentation/pages/login_screen.dart';
-import 'package:syncwell/features/auth/presentation/pages/signup_screen.dart';
+import 'package:syncwell/features/auth/presentation/pages/auth_screen.dart';
 import 'package:syncwell/features/bmi_calc/bmi_calc.dart';
 import 'package:syncwell/features/dashboard/persentaion/pages/dashboard_page.dart';
 import 'package:syncwell/features/diet/presentaion/pages/diet_page.dart';
@@ -17,7 +16,6 @@ class Routes {
   static const workout = '/workout';
   static const profile = '/profile';
   static const bmi = '/bmi';
-
 }
 
 class AppRouter {
@@ -26,24 +24,23 @@ class AppRouter {
       case Routes.splash:
         return MaterialPageRoute(builder: (_) => const SplashPage());
       case Routes.login:
-        return MaterialPageRoute(builder: (_) => const LoginPage());
+        return MaterialPageRoute(builder: (_) => const AuthPage());
       case Routes.signup:
-        return MaterialPageRoute(builder: (_) => const SignupPage());
+        return MaterialPageRoute(builder: (_) => const AuthPage());
       case Routes.dashboard:
         return MaterialPageRoute(
-            builder: (_) => DashboardPage(onNavTap: (i) {}));
+          builder: (_) => DashboardPage(onNavTap: (i) {}),
+        );
       case Routes.diet:
-        return MaterialPageRoute(
-            builder: (_) => DietPage(onNavTap: (i) {}));
+        return MaterialPageRoute(builder: (_) => DietPage(onNavTap: (i) {}));
       case Routes.workout:
-        return MaterialPageRoute(
-            builder: (_) => WorkoutPage(onNavTap: (i) {}));
+        return MaterialPageRoute(builder: (_) => WorkoutPage(onNavTap: (i) {}));
       case Routes.profile:
-        return MaterialPageRoute(
-            builder: (_) => ProfilePage(onNavTap: (i) {}));
+        return MaterialPageRoute(builder: (_) => ProfilePage(onNavTap: (i) {}));
       case Routes.bmi:
         return MaterialPageRoute(
-            builder: (_) => BMICalculatorScreen(onNavTap: (i) {}));
+          builder: (_) => BMICalculatorScreen(onNavTap: (i) {}),
+        );
       default:
         return MaterialPageRoute(builder: (_) => const SplashPage());
     }

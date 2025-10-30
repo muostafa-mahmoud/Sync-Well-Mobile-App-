@@ -1,92 +1,159 @@
-// lib/features/auth/presentation/pages/signup_page.dart
 import 'package:flutter/material.dart';
-import '../../../../core/app/theme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../cubit/auth_cubit.dart';
+import '../cubit/auth_state.dart';
+import '../../data/models/auth_model.dart';
 
-class SignupPage extends StatelessWidget {
-  const SignupPage({super.key});
+class SignUpView extends StatefulWidget {
+  const SignUpView({super.key});
+
+  @override
+  State<SignUpView> createState() => _SignUpViewState();
+}
+
+class _SignUpViewState extends State<SignUpView> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  DateTime? _selectedDate;
+  bool _obscurePassword = true;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _nameController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _selectDate() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (date != null) {
+      setState(() => _selectedDate = date);
+    }
+  }
+
+  void _submit() {
+    if (_formKey.currentState?.validate() ?? false) {
+      context.read<AuthCubit>().signUp(
+            SignUpRequest(
+              email: _emailController.text.trim(),
+              password: _passwordController.text,
+              fullName: _nameController.text.trim(),
+              phone: _phoneController.text.isEmpty
+                  ? null
+                  : _phoneController.text.trim(),
+              dob: _selectedDate,
+            ),
+          );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final name = TextEditingController();
-    final email = TextEditingController();
-    final phone = TextEditingController();
-    final dob = TextEditingController();
-    final password = TextEditingController();
-
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: SizedBox(
-            width: 360,
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [AppColors.primaryGreen, AppColors.accentBlue],
+    return BlocBuilder<AuthCubit, AuthState>(
+      builder: (context, state) {
+        return Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(labelText: 'Full Name'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your name';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(labelText: 'Email'),
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your email';
+                  }
+                  if (!value.contains('@')) {
+                    return 'Please enter a valid email';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                     ),
-                    borderRadius: BorderRadius.circular(16),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
                   ),
-                  child: const Center(
-                    child: Text('SW',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20)),
-                  ),
                 ),
-                const SizedBox(height: 12),
-                const Text('Create Account',
-                    textAlign: TextAlign.center,
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: name,
-                  decoration: const InputDecoration(
-                      labelText: 'Full Name', hintText: 'Enter your full name'),
+                obscureText: _obscurePassword,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your password';
+                  }
+                  if (value.length < 6) {
+                    return 'Password must be at least 6 characters';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _phoneController,
+                decoration: const InputDecoration(
+                  labelText: 'Phone (optional)',
                 ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: email,
-                  decoration: const InputDecoration(
-                      labelText: 'Email', hintText: 'Enter your email'),
+                keyboardType: TextInputType.phone,
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                title: const Text('Date of Birth (optional)'),
+                subtitle: Text(
+                  _selectedDate == null
+                      ? 'Not selected'
+                      : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
                 ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: phone,
-                  decoration: const InputDecoration(
-                      labelText: 'Phone Number',
-                      hintText: 'Enter your phone number'),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: dob,
-                  decoration: const InputDecoration(
-                      labelText: 'Date of Birth', hintText: 'mm/dd/yyyy'),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: password,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                      labelText: 'Password', hintText: 'Create a password'),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    // TODO: Hook up signup logic
-                  },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryGreen),
-                  child: const Text('Create Account'),
-                ),
-              ],
-            ),
+                trailing: const Icon(Icons.calendar_today),
+                onTap: _selectDate,
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: state.status == AuthStatus.loading ? null : _submit,
+                child: state.status == AuthStatus.loading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Sign Up'),
+              ),
+            ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
