@@ -16,7 +16,7 @@ class DietCubit extends Cubit<DietState> {
   Future<void> fetchMeals(double targetCalories) async {
     emit(IntialSttateDiet());
     try {
-      final meals = await dioServices.getMeals(targetCalories);
+      final meals = await dioServices.getMeals(2000);
       if (meals != null) {
         // حفظ في Hive
         await mealsBox.put('today_meals', meals);
