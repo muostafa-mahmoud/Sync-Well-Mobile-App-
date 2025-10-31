@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-part 'meals_section.g.dart';
+part 'meal_model.g.dart';
 
 @HiveType(typeId: 1)
 class MealsSection extends HiveObject {
