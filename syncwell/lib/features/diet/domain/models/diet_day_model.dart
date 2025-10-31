@@ -1,64 +1,61 @@
-// lib/features/diet/domain/models/diet_day_model.dart
 import 'package:hive/hive.dart';
-import 'meal_model.dart';
 
-@HiveType(typeId: 3)
-class DietDayModel extends HiveObject {
+part 'meals_section.g.dart'; // هنستخدم build_runner عشان يولد هذا الملف
+
+@HiveType(typeId: 1)
+class MealsSection extends HiveObject {
   @HiveField(0)
-  DateTime date;
-  @HiveField(1)
-  int targetCalories;
-  @HiveField(2)
-  List<MealModel> breakfast;
-  @HiveField(3)
-  List<MealModel> lunch;
-  @HiveField(4)
-  List<MealModel> dinner;
-  @HiveField(5)
-  List<MealModel> snacks;
+  int id;
 
-  DietDayModel({
-    required this.date,
-    required this.targetCalories,
-    this.breakfast = const [],
-    this.lunch = const [],
-    this.dinner = const [],
-    this.snacks = const [],
+  @HiveField(1)
+  String image;
+
+  @HiveField(2)
+  String imageType;
+
+  @HiveField(3)
+  String title;
+
+  @HiveField(4)
+  int readyInMinutes;
+
+  @HiveField(5)
+  int servings;
+
+  @HiveField(6)
+  String sourceUrl;
+
+  MealsSection({
+    required this.id,
+    required this.image,
+    required this.imageType,
+    required this.title,
+    required this.readyInMinutes,
+    required this.servings,
+    required this.sourceUrl,
   });
 
-  int get consumed => [
-    ...breakfast,
-    ...lunch,
-    ...dinner,
-    ...snacks,
-  ].fold(0, (a, b) => a + b.calories);
-  int get remaining => targetCalories - consumed;
-}
+  // to json
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'image': image,
+    'imageType': imageType,
+    'title': title,
+    'readyInMinutes': readyInMinutes,
+    'servings': servings,
+    'sourceUrl': sourceUrl,
+  };
 
-class DietDayModelAdapter extends TypeAdapter<DietDayModel> {
-  @override
-  final int typeId = 3;
-
-  @override
-  DietDayModel read(BinaryReader reader) {
-    return DietDayModel(
-      date: DateTime.fromMillisecondsSinceEpoch(reader.readInt()),
-      targetCalories: reader.readInt(),
-      breakfast: (reader.readList().cast<MealModel>()),
-      lunch: (reader.readList().cast<MealModel>()),
-      dinner: (reader.readList().cast<MealModel>()),
-      snacks: (reader.readList().cast<MealModel>()),
+  // from json
+  factory MealsSection.fromJson(Map<String, dynamic> json) {
+    return MealsSection(
+      id: json['id'] ?? 0,
+      image: json['image'] ?? '',
+      imageType: json['imageType'] ?? '',
+      title: json['title'] ?? '',
+      readyInMinutes: json['readyInMinutes'] ?? 0,
+      servings: json['servings'] ?? 0,
+      sourceUrl: json['sourceUrl'] ?? '',
     );
-  }
-
-  @override
-  void write(BinaryWriter writer, DietDayModel obj) {
-    writer
-      ..writeInt(obj.date.millisecondsSinceEpoch)
-      ..writeInt(obj.targetCalories)
-      ..writeList(obj.breakfast)
-      ..writeList(obj.lunch)
-      ..writeList(obj.dinner)
-      ..writeList(obj.snacks);
   }
 }
