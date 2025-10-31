@@ -1,30 +1,32 @@
-// lib/features/diet/presentation/widgets/meal_tile.dart
 import 'package:flutter/material.dart';
 import '../../domain/models/meal_model.dart';
 
 class MealTile extends StatelessWidget {
-  final String title;
-  final List<MealModel> meals;
-  final int totalKcal;
+  final MealsSection meal;
 
-  const MealTile({super.key, required this.title, required this.meals, required this.totalKcal});
+  const MealTile({super.key, required this.meal});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
-              Text('$totalKcal kcal'),
-            ],
-          ),
-          const SizedBox(height: 8),
-          for (final meal in meals) Text('• ${meal.title}'),
-        ]),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: ListTile(
+        leading: Image.network(
+          'https://spoonacular.com/recipeImages/${meal.image}',
+          width: 60,
+          height: 60,
+          fit: BoxFit.cover,
+        ),
+        title: Text(
+          meal.title,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          '${meal.readyInMinutes} mins | Servings: ${meal.servings}',
+        ),
+        onTap: () {
+          // Open the recipe URL in browser
+        },
       ),
     );
   }
