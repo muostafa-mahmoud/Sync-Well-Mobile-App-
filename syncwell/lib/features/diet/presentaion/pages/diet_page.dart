@@ -6,7 +6,9 @@ import '../widgets/meal_tile.dart';
 import '../widgets/nutrition_section.dart';
 
 class DietPage extends StatelessWidget {
-  const DietPage({super.key});
+  final Function(int) onNavTap;
+
+  const DietPage({super.key, required this.onNavTap});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,6 @@ class DietPage extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
-              // Nutrition Section inside ListView
               NutritionSection(nutritions: nutritions),
 
               const SizedBox(height: 16),
@@ -35,8 +36,15 @@ class DietPage extends StatelessWidget {
               ),
               const SizedBox(height: 8),
 
-              // Meals list
               for (var meal in meals) MealTile(meal: meal),
+
+              const SizedBox(height: 16),
+
+              // Example: Navigate using onNavTap
+              ElevatedButton(
+                onPressed: () => onNavTap(1), // navigate to tab 1 for example
+                child: const Text('Go to Workout Page'),
+              ),
             ],
           );
         } else if (state is MealsLoadFeild) {
