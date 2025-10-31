@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:syncwell/features/diet/presentaion/cubit/diet_state.dart';
 import '../cubit/diet_cubit.dart';
+import '../cubit/diet_state.dart';
 import '../widgets/meal_tile.dart';
 import '../widgets/nutrition_section.dart';
 
 class DietPage extends StatelessWidget {
-  const DietPage({super.key});
+  final Function(int) onNavTap;
+
+  const DietPage({super.key, required this.onNavTap});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class DietPage extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
-              // Nutrition Section inside ListView
+              // Nutrition Section
               NutritionSection(nutritions: nutritions),
 
               const SizedBox(height: 16),
@@ -35,8 +37,23 @@ class DietPage extends StatelessWidget {
               ),
               const SizedBox(height: 8),
 
-              // Meals list
-              for (var meal in meals) MealTile(meal: meal),
+              // Display all meals in a scrollable list
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: meals.length,
+                itemBuilder: (context, index) {
+                  return MealTile(meal: meals[index]);
+                },
+              ),
+
+              const SizedBox(height: 16),
+
+              // Example navigation button
+              ElevatedButton(
+                onPressed: () => onNavTap(1),
+                child: const Text('Go to Workout Page'),
+              ),
             ],
           );
         } else if (state is MealsLoadFeild) {
