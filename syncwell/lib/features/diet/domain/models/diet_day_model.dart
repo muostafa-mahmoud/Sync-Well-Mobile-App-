@@ -1,61 +1,41 @@
 import 'package:hive/hive.dart';
+import 'package:syncwell/features/diet/domain/models/meal_model.dart';
+import 'nutritions.dart';
 
-part 'meals_section.g.dart'; // هنستخدم build_runner عشان يولد هذا الملف
+part 'diet_day_model.g.dart';
 
-@HiveType(typeId: 1)
-class MealsSection extends HiveObject {
+@HiveType(typeId: 2) // كل موديل له typeId مختلف
+class MealsModel extends HiveObject {
   @HiveField(0)
-  int id;
+  List<MealsSection> meals;
 
   @HiveField(1)
-  String image;
+  Nutritions nutritions;
 
-  @HiveField(2)
-  String imageType;
+  MealsModel({required this.meals, required this.nutritions});
 
-  @HiveField(3)
-  String title;
+  // toJson
+  Map<String, dynamic> toJson() {
+    return {
+      'meals': meals.map((e) => e.toJson()).toList(),
+      'nutritions': nutritions.toJson(),
+    };
+  }
 
-  @HiveField(4)
-  int readyInMinutes;
+  // fromJson
+  factory MealsModel.fromJson(Map<String, dynamic> json) {
+    var mealsJson = json['meals'] as List<dynamic>?; // nullable
+    List<MealsSection> mealsList = mealsJson != null
+        ? mealsJson.map((item) => MealsSection.fromJson(item)).toList()
+        : [];
 
-  @HiveField(5)
-  int servings;
+    var nutritionsJson = json['nutritions'] as Map<String, dynamic>?;
 
-  @HiveField(6)
-  String sourceUrl;
-
-  MealsSection({
-    required this.id,
-    required this.image,
-    required this.imageType,
-    required this.title,
-    required this.readyInMinutes,
-    required this.servings,
-    required this.sourceUrl,
-  });
-
-  // to json
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'image': image,
-    'imageType': imageType,
-    'title': title,
-    'readyInMinutes': readyInMinutes,
-    'servings': servings,
-    'sourceUrl': sourceUrl,
-  };
-
-  // from json
-  factory MealsSection.fromJson(Map<String, dynamic> json) {
-    return MealsSection(
-      id: json['id'] ?? 0,
-      image: json['image'] ?? '',
-      imageType: json['imageType'] ?? '',
-      title: json['title'] ?? '',
-      readyInMinutes: json['readyInMinutes'] ?? 0,
-      servings: json['servings'] ?? 0,
-      sourceUrl: json['sourceUrl'] ?? '',
+    return MealsModel(
+      meals: mealsList,
+      nutritions: nutritionsJson != null
+          ? Nutritions.fromJson(nutritionsJson)
+          : Nutritions(calories: 0, protein: 0, fat: 0, carbohydrates: 0),
     );
   }
 }
