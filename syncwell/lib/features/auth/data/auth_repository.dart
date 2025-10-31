@@ -1,32 +1,36 @@
 // lib/features/auth/data/auth_repository.dart
-// Compatibility wrapper that bridges old and new auth implementations
-import 'package:hive/hive.dart';
-import '../domain/user_mode.dart';
+// Repository wrapper for LocalAuthService - provides access to user data
+import '../data/repositories/local_auth_service.dart';
+import '../domain/entities/user.dart';
 
 class AuthRepository {
-  final String _boxName = 'userBox';
+  final LocalAuthService _authService;
 
-  Box<UserModel> get _box => Hive.box<UserModel>(_boxName);
+  AuthRepository(this._authService);
 
-  UserModel? get currentUser {
-    if (_box.isEmpty) return null;
-    return _box.values.first;
-  }
+  User? get currentUser => _authService.currentUser;
 
-  void saveUser(UserModel user) {
-    _box.clear();
-    _box.add(user);
-  }
+  bool get isLoggedIn => _authService.isLoggedIn;
 
-  void updateUser(UserModel user) {
-    saveUser(user);
-  }
+  Future<void> updateFitnessProfile({
+    int? age,
+    double? weight,
+    double? height,
+    int? workoutsCount,
+    double? weightLost,
+    int? caloriesPerDay,
+  }) async {
+    final user = currentUser;
+    if (user == null) throw Exception('No user logged in');
 
-  void deleteUser() {
-    _box.clear();
-  }
-
-  Future<void> logout() async {
-    _box.clear();
+    await _authService.updateFitnessProfile(
+      uid: user.id,
+      age: age,
+      weight: weight,
+      height: height,
+      workoutsCount: workoutsCount,
+      weightLost: weightLost,
+      caloriesPerDay: caloriesPerDay,
+    );
   }
 }

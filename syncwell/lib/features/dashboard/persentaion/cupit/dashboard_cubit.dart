@@ -28,17 +28,36 @@ class DashboardCubit extends Cubit<DashboardState> {
   final WorkoutRepository workoutRepo;
 
   DashboardCubit(this.authRepo, this.dietRepo, this.workoutRepo)
-      : super(const DashboardState(consumedKcal: 0, targetKcal: 0, steps: 0, bmi: 0, weightKg: 0));
+    : super(
+        const DashboardState(
+          consumedKcal: 0,
+          targetKcal: 0,
+          steps: 0,
+          bmi: 0,
+          weightKg: 0,
+        ),
+      );
 
   Future<void> load() async {
     final user = authRepo.currentUser;
-    final diet = await dietRepo.loadToday(defaultTarget: user?.caloriesPerDay ?? 2500);
-    emit(DashboardState(
-      consumedKcal: diet.consumed,
-      targetKcal: diet.targetCalories,
-      steps: 7542,
-      bmi: user?.bmi ?? 0,
-      weightKg: user?.weight?? 0,
-    ));
+    final diet = await dietRepo.loadToday(
+      defaultTarget: user?.caloriesPerDay ?? 2500,
+    );
+
+    // Calculate total calories from meals
+    int consumedCalories = 0;
+    if (diet != null) {
+      consumedCalories = diet.nutritions.calories.toInt();
+    }
+
+    emit(
+      DashboardState(
+        consumedKcal: consumedCalories,
+        targetKcal: user?.caloriesPerDay ?? 2500,
+        steps: 7542,
+        bmi: user?.bmi ?? 0,
+        weightKg: user?.weight ?? 0,
+      ),
+    );
   }
 }

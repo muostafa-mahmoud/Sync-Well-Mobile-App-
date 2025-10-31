@@ -37,9 +37,7 @@ class LocalAuthService {
   }) async {
     // Check if user already exists
     final existingUser = _usersBox.values
-        .where(
-          (user) => user.email.toLowerCase() == email.toLowerCase(),
-        )
+        .where((user) => user.email.toLowerCase() == email.toLowerCase())
         .toList();
 
     if (existingUser.isNotEmpty) {
@@ -76,10 +74,7 @@ class LocalAuthService {
   }
 
   /// Login user
-  Future<User> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<User> login({required String email, required String password}) async {
     // Find user by email
     UserHiveModel? userHiveModel;
     try {
@@ -127,6 +122,13 @@ class LocalAuthService {
       email: userHiveModel.email,
       phone: userHiveModel.phone,
       dob: userHiveModel.dob,
+      age: userHiveModel.age,
+      weight: userHiveModel.weight,
+      height: userHiveModel.height,
+      bmi: userHiveModel.bmi,
+      workoutsCount: userHiveModel.workoutsCount,
+      weightLost: userHiveModel.weightLost,
+      caloriesPerDay: userHiveModel.caloriesPerDay,
     );
   }
 
@@ -151,6 +153,13 @@ class LocalAuthService {
       email: userHiveModel.email,
       phone: userHiveModel.phone,
       dob: userHiveModel.dob,
+      age: userHiveModel.age,
+      weight: userHiveModel.weight,
+      height: userHiveModel.height,
+      bmi: userHiveModel.bmi,
+      workoutsCount: userHiveModel.workoutsCount,
+      weightLost: userHiveModel.weightLost,
+      caloriesPerDay: userHiveModel.caloriesPerDay,
     );
   }
 
@@ -169,6 +178,33 @@ class LocalAuthService {
     if (fullName != null) userHiveModel.fullName = fullName;
     if (phone != null) userHiveModel.phone = phone;
     if (dob != null) userHiveModel.dob = dob;
+
+    await userHiveModel.save();
+  }
+
+  /// Update fitness profile data
+  Future<void> updateFitnessProfile({
+    required String uid,
+    int? age,
+    double? weight,
+    double? height,
+    int? workoutsCount,
+    double? weightLost,
+    int? caloriesPerDay,
+  }) async {
+    final userHiveModel = _usersBox.get(uid);
+    if (userHiveModel == null) {
+      throw Exception('User not found');
+    }
+
+    userHiveModel.updateFitnessProfile(
+      age: age,
+      weight: weight,
+      height: height,
+      workoutsCount: workoutsCount,
+      weightLost: weightLost,
+      caloriesPerDay: caloriesPerDay,
+    );
 
     await userHiveModel.save();
   }
