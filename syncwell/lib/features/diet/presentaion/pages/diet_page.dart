@@ -1,63 +1,49 @@
-// lib/features/diet/presentation/pages/diet_page.dart
 import 'package:flutter/material.dart';
-import '../../../../core/app/theme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:syncwell/features/diet/presentaion/cubit/diet_state.dart';
+import '../cubit/diet_cubit.dart';
+import '../widgets/meal_tile.dart';
+import '../widgets/nutrition_section.dart';
 
 class DietPage extends StatelessWidget {
-  final Function(int) onNavTap;
-  const DietPage({super.key, required this.onNavTap});
+  const DietPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: ListView(
-          children: [
-            Text('Diet Plan',
-                style: Theme.of(context).textTheme.headlineSmall),
-            const Text('Track your nutrition.'),
-            const SizedBox(height: 16),
-            Text('Daily Target: 2500 kcal'),
-            const SizedBox(height: 6),
-            LinearProgressIndicator(
-              value: 1700 / 2500,
-              minHeight: 10,
-              color: AppColors.primaryGreen,
-              backgroundColor: Colors.grey[800],
-            ),
-            const SizedBox(height: 6),
-            const Text('1700 kcal consumed, 800 kcal remaining'),
-            const SizedBox(height: 16),
-            _mealCard('Breakfast', 450, ['Oatmeal with Berries', 'Greek Yogurt']),
-            _mealCard('Lunch', 650, ['Grilled Chicken Salad', 'Brown Rice']),
-            _mealCard('Dinner', 0, []),
-            _mealCard('Snacks', 0, []),
-          ],
-        ),
-      ),
-    );
-  }
+    return BlocBuilder<DietCubit, DietState>(
+      builder: (context, state) {
+        if (state is MealsLoaded) {
+          final meals = state.mealsModel.meals;
+          final nutritions = state.mealsModel.nutritions;
 
-  Widget _mealCard(String title, int kcal, List<String> items) {
-    return Card(
-      color: AppColors.cardBg,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          return ListView(
+            padding: const EdgeInsets.all(16),
             children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-              Text('$kcal kcal'),
+              const Text(
+                'Diet Plan',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+
+              // Nutrition Section inside ListView
+              NutritionSection(nutritions: nutritions),
+
+              const SizedBox(height: 16),
+              const Text(
+                'Meals',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+
+              // Meals list
+              for (var meal in meals) MealTile(meal: meal),
             ],
-          ),
-          const SizedBox(height: 8),
-          if (items.isEmpty)
-            const Text('No items added')
-          else
-            for (final item in items) Text('• $item'),
-        ]),
-      ),
+          );
+        } else if (state is MealsLoadFeild) {
+          return Center(child: Text(state.massageError));
+        }
+        return const Center(child: CircularProgressIndicator());
+      },
     );
   }
 }
