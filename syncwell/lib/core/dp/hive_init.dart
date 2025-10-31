@@ -9,12 +9,12 @@ import 'boxes.dart';
 
 Future<void> initHiveAdaptersAndBoxes() async {
   Hive.registerAdapter(UserModelAdapter());
-  Hive.registerAdapter(MealModelAdapter());
-  Hive.registerAdapter(DietDayModelAdapter());
+  Hive.registerAdapter(MealsModel as TypeAdapter);
+  Hive.registerAdapter(MealsSection as TypeAdapter);
   Hive.registerAdapter(ExerciseModelAdapter());
   Hive.registerAdapter(WorkoutDayModelAdapter());
 
   await Hive.openBox<UserModel>(Boxes.userBox);
-  await Hive.openBox<DietDayModel>(Boxes.dietBox);
+  await Hive.openBox<MealsModel>(Boxes.dietBox);
   await Hive.openBox<WorkoutDayModel>(Boxes.workoutBox);
 }
