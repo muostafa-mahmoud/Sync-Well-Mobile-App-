@@ -6,9 +6,8 @@ import 'package:syncwell/features/auth/data/repositories/local_auth_service.dart
 import 'package:syncwell/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:syncwell/features/dashboard/persentaion/cupit/dashboard_cubit.dart';
 
-import 'package:syncwell/features/diet/data/diet_api_service.dart';
-import 'package:syncwell/features/diet/data/diet_repository.dart';
 import 'package:syncwell/features/diet/presentaion/cubit/diet_cubit.dart';
+import 'package:syncwell/features/diet/services.dart';
 import 'package:syncwell/features/profile/peresentation/cubit/profile_cubit.dart';
 
 import 'package:syncwell/features/workout/data/workout_repository.dart';
@@ -23,11 +22,9 @@ void setupDI() {
   // Repositories / Services
   getIt.registerLazySingleton<AuthRepository>(() => AuthRepository());
   getIt.registerLazySingleton<LocalAuthService>(() => LocalAuthService());
-  getIt.registerLazySingleton<DietApiService>(
-    () => DietApiService('https://api.example.com'),
-  );
+  getIt.registerLazySingleton<DioServices>(() => DioServices());
   getIt.registerLazySingleton<DietRepository>(
-    () => DietRepository(getIt<DietApiService>()),
+    () => DietRepository(getIt<DioServices>()),
   );
   getIt.registerLazySingleton<WorkoutRepository>(() => WorkoutRepository());
   getIt.registerLazySingleton<ProfileRepository>(
